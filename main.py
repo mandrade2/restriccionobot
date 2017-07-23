@@ -4,17 +4,16 @@ from time import sleep
 
 
 class BotHandler:
-
     def __init__(self, token):
-            self.token = token
-            self.api_url = "https://api.telegram.org/bot{}/".format(token)
+        self.token = token
+        self.api_url = "https://api.telegram.org/bot{}/".format(token)
 
     def get_updates(self, offset=None, timeout=30):
-            method = 'getUpdates'
-            params = {'timeout': timeout, 'offset': offset}
-            resp = requests.get(self.api_url + method, params)
-            result_json = resp.json()['result']
-            return result_json
+        method = 'getUpdates'
+        params = {'timeout': timeout, 'offset': offset}
+        resp = requests.get(self.api_url + method, params)
+        result_json = resp.json()['result']
+        return result_json
 
     def send_message(self, chat_id, text):
         params = {'chat_id': chat_id, 'text': text}
@@ -27,7 +26,28 @@ class BotHandler:
         if len(get_result) > 0:
             last_update = get_result[-1]
         else:
-            last_update = get_result[len(get_result)]
+            last_update = [{"update_id": 791413851,
+                            "message": {
+                                "message_id": 0,
+                                "from": {
+                                    "id": 193767423,
+                                    "first_name": "Matias",
+                                    "last_name": "Andrade",
+                                    "username": "matiasAG",
+                                    "language_code": "en"
+                                },
+                                "chat": {
+                                    "id": 193767423,
+                                    "first_name": "Matias",
+                                    "last_name": "Andrade",
+                                    "username": "matiasAG",
+                                    "type": "private"
+                                },
+                                "date": 1500797173,
+                                "text": "hi"
+                            }
+                            }
+                           ]
 
         return last_update
 
@@ -35,6 +55,7 @@ class BotHandler:
 greet_bot = BotHandler("439052623:AAHVOAvksrcfwVjYjctr22hoUW4rqMyJ7rA")
 greetings = ('hello', 'hi', 'greetings', 'sup')
 now = datetime.datetime.now()
+
 
 def main():
     new_offset = None
@@ -49,21 +70,22 @@ def main():
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
 
-        if last_chat_text.lower() in greetings  and 6 <= hour < 12: #and today == now.day
-                    greet_bot.send_message(last_chat_id, 'Good Morning  {}'.format(last_chat_name))
-                    today += 1
-        elif last_chat_text.lower() in greetings  and 1 <= hour < 6: #and today == now.day
-                    greet_bot.send_message(last_chat_id, 'feliz madrugada {}'.format(last_chat_name))
-                    today += 1
-        elif last_chat_text.lower() in greetings and 12 <= hour < 17: #and today == now.day
-                    greet_bot.send_message(last_chat_id, 'Good Afternoon {}'.format(last_chat_name))
-                    today += 1
+        if last_chat_text.lower() in greetings and 6 <= hour < 12:  # and today == now.day
+            greet_bot.send_message(last_chat_id, 'Good Morning  {}'.format(last_chat_name))
+            today += 1
+        elif last_chat_text.lower() in greetings and 1 <= hour < 6:  # and today == now.day
+            greet_bot.send_message(last_chat_id, 'feliz madrugada {}'.format(last_chat_name))
+            today += 1
+        elif last_chat_text.lower() in greetings and 12 <= hour < 17:  # and today == now.day
+            greet_bot.send_message(last_chat_id, 'Good Afternoon {}'.format(last_chat_name))
+            today += 1
 
-        elif last_chat_text.lower() in greetings and 17 <= hour < 23: #and today == now.day
-                    greet_bot.send_message(last_chat_id, 'Good Evening  {}'.format(last_chat_name))
-                    today += 1
+        elif last_chat_text.lower() in greetings and 17 <= hour < 23:  # and today == now.day
+            greet_bot.send_message(last_chat_id, 'Good Evening  {}'.format(last_chat_name))
+            today += 1
 
         new_offset = last_update_id + 1
+
 
 if __name__ == '__main__':
     try:
